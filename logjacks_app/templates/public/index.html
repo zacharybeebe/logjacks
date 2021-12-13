@@ -1,0 +1,52 @@
+{% extends 'public/base_public.html' %}
+
+{% block style %}
+<style> body {
+        background: url(static/images/DJI_0004_bg.jpg) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+      }
+</style>
+{% endblock %}
+
+
+{% block title %}Home{% endblock %}
+
+{% block logo %}
+<div style="cursor: pointer" onclick="window.location.href='{{ url_for('index') }}';">
+  <h3 class="float-md-start mb-0" style="color: rgba(0, 0, 0, 0.95); text-shadow: 3px 3px white; font-size: 40px;">
+      <img src="{{ url_for('static', filename='images/logo_3bgremove.png') }}" width="226" height="120">
+    &emsp;&emsp;LogJacks
+  </h3>
+</div>
+{% endblock %}
+
+
+{% block header1 %}
+    Timber Cruising Software for the Western US
+    {% for i in range(4) %}
+      <p>&emsp;</p>
+    {% endfor %}
+{% endblock %}
+
+{% block info %}
+LogJacks provides free software to process timber cruise and
+inventory data and makes it easy to generate reports, spreadsheets,
+database integration and exporting to FVS
+{% endblock %}
+
+{% block learn_more %}
+<p>&emsp;</p>
+<p>
+    <button onclick="window.location.href='#';"  class="btn btn-lg btn-secondary fw-bold border-white bg-white">Try It Now</button>
+</p>
+<p>
+    <button onclick="window.location.href='{{ url_for('login') }}';"  class="btn btn-lg btn-secondary fw-bold border-white bg-white">Login</button>
+</p>
+<p>
+    <button onclick="window.location.href='{{ url_for('create_account') }}';"  class="btn btn-lg btn-secondary fw-bold border-white bg-white">Create Account</button>
+</p>
+
+{% endblock %}

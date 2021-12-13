@@ -1,0 +1,41 @@
+{% extends 'public/base_public.html' %}
+
+
+{% block title %}Login{% endblock %}
+
+{% block logo %}
+<div style="cursor: pointer" onclick="window.location.href='{{ url_for('index') }}';">
+  <h3 class="float-md-start mb-0" style="color: rgba(255, 255, 255, 0.95); text-shadow: 3px 3px black; font-size: 40px;">
+      <img src="{{ url_for('static', filename='images/logo3_white.png') }}" width="226" height="120">
+    &emsp;&emsp;LogJacks
+  </h3>
+</div>
+{% endblock %}
+
+
+{% block info %}LogJacks Login{% endblock %}
+
+{% block login %}
+<form action="/login" method="post">
+    <p>
+        <label style="color: rgba(255, 255, 255, .95); text-shadow: 1.5px 1.5px black; width: 100px">Username:</label>
+        <input type="text" name="username" value="{{ fill_back_username }}" />
+    </p>
+    <p>
+        <label style="color: rgba(255, 255, 255, .95); text-shadow: 1.5px 1.5px black; width: 100px">Password:</label>
+        <input type="password" name="password" />
+    </p>
+    <p>
+        <input type="submit" class="btn btn-light" value="login" />
+    </p>
+</form>
+{% endblock %}
+
+
+{% block flash %}
+    {% if flash %}
+        <p style="color: rgba(84, 216, 226, .95);">{{ flash }}</p>
+    {% else %}
+        <p>&emsp;</p>
+    {% endif %}
+{% endblock %}
