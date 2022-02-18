@@ -1,0 +1,122 @@
+{% extends 'private/base_private.html' %}
+
+
+{% block title %}
+    Stands Summary
+{% endblock %}
+
+{% block header2 %}
+    Stands Summary
+{% endblock %}
+
+
+
+{% block table_data %}
+<script src="{{ url_for('static', filename='assets/dist/js/db_stands_summary.js') }}"></script>
+
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    {% for head in table_data[0] %}
+                        <th style="width: auto;">{{ head }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for stand in table_data[1:] %}
+                    {% set sname = stand['stand_data'][0]%}
+                    <tr onclick="toggle_table(this, '{{ sname }}_plots')" style="cursor: pointer;">
+                        {% for s_data in stand['stand_data'] %}
+                            <td>{{ s_data }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr id="{{ sname }}_plots" style="visibility: collapse;">
+                        <td colspan="{{ stand['stand_data'] | length }}">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        {% for head in stand['plots']['header'] %}
+                                            <th style="width: auto;">{{ head }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pnum in stand['plots'] %}
+                                        {% if pnum != 'header' %}
+                                            {% if stand['plots'][pnum]['plot_data'][3] == 'No Trees' %}
+                                                <tr>
+                                                    {% for p_data in stand['plots'][pnum]['plot_data'] %}
+                                                        <td>{{ p_data }}</td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% else %}
+                                                <tr onclick="toggle_table(this, '{{ sname }}_{{ pnum }}_trees')" style="cursor: pointer;">
+                                                    {% for p_data in stand['plots'][pnum]['plot_data'] %}
+                                                        <td>{{ p_data }}</td>
+                                                    {% endfor %}
+                                                </tr>
+
+                                                <tr id="{{ sname }}_{{ pnum }}_trees" style="visibility: collapse;">
+                                                    <td colspan="{{ stand['stand_data'] | length }}">
+                                                        <table class="table table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    {% for head in stand['plots'][pnum]['trees']['header'] %}
+                                                                        <th style="width: auto;">{{ head }}</th>
+                                                                    {% endfor %}
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for tnum in stand['plots'][pnum]['trees'] %}
+                                                                    {% if tnum != 'header' %}
+                                                                        <tr onclick="toggle_table(this, '{{ sname }}_{{ pnum }}_{{ tnum }}_logs')" style="cursor: pointer;">
+                                                                            {% for t_data in stand['plots'][pnum]['trees'][tnum]['tree_data'] %}
+                                                                                <td>{{ t_data }}</td>
+                                                                            {% endfor %}
+                                                                        </tr>
+
+                                                                        <tr id="{{ sname }}_{{ pnum }}_{{ tnum }}_logs" style="visibility: collapse;">
+                                                                            <td colspan="{{ stand['stand_data'] | length }}">
+                                                                                <table class="table table-sm">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            {% for head in stand['plots'][pnum]['trees'][tnum]['logs']['header'] %}
+                                                                                                <th style="width: auto;">{{ head }}</th>
+                                                                                            {% endfor %}
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        {% for lnum in stand['plots'][pnum]['trees'][tnum]['logs'] %}
+                                                                                            {% if lnum != 'header' %}
+                                                                                                <tr>
+                                                                                                    {% for l_data in stand['plots'][pnum]['trees'][tnum]['logs'][lnum]['log_data'] %}
+                                                                                                        <td>{{ l_data }}</td>
+                                                                                                    {% endfor %}
+                                                                                                </tr>
+                                                                                            {% endif %}
+                                                                                        {% endfor %}
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

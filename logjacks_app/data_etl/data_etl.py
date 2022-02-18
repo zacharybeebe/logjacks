@@ -12,8 +12,38 @@ def _timer_(func):
     return wrapper
 
 
-def get_db_table(user, table):
-    return DB_TABLE_FUNCS[table](user)
+def get_stands_table(user):
+    table_data = [list(DB_STAND.keys())]
+    for stand in user.stands:
+        stand_info = {
+            'stand_data': [DB_STAND[key](stand) for key in DB_STAND],
+            'plots': {
+                'header': list(DB_PLOT.keys())
+            }
+        }
+        for plot in stand.plots:
+            plot_info = {
+                'plot_data': [DB_PLOT[key](plot) for key in DB_PLOT],
+                'trees': {
+                    'header': list(DB_TREE.keys()),
+                }
+            }
+            for tree in plot.trees:
+                tree_info = {
+                    'tree_data': [DB_TREE[key](tree) for key in DB_TREE],
+                    'logs': {
+                        'header': list(DB_LOG.keys())
+                    }
+                }
+                for log in tree.logs:
+                    log_info = {
+                        'log_data': [DB_LOG[key](log) for key in DB_LOG]
+                    }
+                    tree_info['logs'][log.number] = log_info
+                plot_info['trees'][tree.number] = tree_info
+            stand_info['plots'][plot.number] = plot_info
+        table_data.append(stand_info)
+    return table_data
 
 
 def get_individual_table(model):

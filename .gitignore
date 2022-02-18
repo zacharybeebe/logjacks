@@ -1,2 +1,4 @@
 /venv/
 /.idea/
+/logjacks_app/config/app_config.py
+current_test_users.txt

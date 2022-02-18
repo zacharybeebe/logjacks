@@ -18,14 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config[''] = ''
 # app.config[''] = ''
 
-from logjacks_app.database.models import (
-    db,
-    User,
-    Stand,
-    Plot,
-    Tree,
-    Log
-)
+from logjacks_app.database import db, User, Stand, Plot, Tree, Log
 
 
 create_data = False
@@ -38,6 +31,6 @@ if create_data:
         age = choice([25, 35, 45, 65])
         populate_fake_stand(db, User, Stand, Plot, Tree, Log, locale, age, plot_factor, 'fake', 5)
 
-app.permanent_session_lifetime = timedelta(seconds=360)
+app.permanent_session_lifetime = timedelta(seconds=600)
 
 from logjacks_app.routes import public#, dashboard

@@ -1,0 +1,88 @@
+{% extends 'private/base_private.html' %}
+
+
+{% block title %}
+    Individual
+{% endblock %}
+
+{% block header2 %}
+    {% if not plot and not tree and not log %}
+        Stand: {{ stand }}
+    {% elif not tree and not log %}
+        Stand: {{ stand }} | Plot: {{ plot }}
+    {% elif not log %}
+        Stand: {{ stand }} | Plot: {{ plot }} | Tree: {{ tree }}
+    {% else %}
+        Stand: {{ stand }} | Plot: {{ plot }} | Tree: {{ tree }} | Log: {{ log }}
+    {% endif %}
+{% endblock %}
+
+{% block attr_tables %}
+    {% for key in attr_table %}
+        <p>
+        {% set row = attr_table[key] %}
+        <label style="width: 200px; text-align: left; font-weight: bold;">{{ key }}:</label>
+        {% if row['input'] %}
+            <input type="{{ row['type'] }}" name="#" value="{{ row['val'] }}" style="width: 200px;" />
+        {% else %}
+            <label style="width: 200px; text-align: left; font-weight: bold;">{{ row['val'] }}</label>
+        {% endif %}
+        </p>
+    {% endfor %}
+{% endblock %}
+
+{% block table_data %}
+    {% if table_data %}
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        {% for head in table_data[0] %}
+                            <th style="width: auto;">{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table_data[1:] %}
+                        {% if row[0] == 'TOTALS' %}
+                            {% set font_weight = 'bold' %}
+                        {% else %}
+                            {% set font_weight = 'auto' %}
+                        {% endif %}
+                        <tr>
+                            {% if row[0] == 'TOTALS' %}
+                            <td colspan="{{ row|length }}">
+                                <table class="table table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            {% for i in range(5) %}
+                                                <th style="width: auto;">Col {{ i }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in range(5) %}
+                                            <tr>
+                                            {% for j in range(5) %}
+                                                <td>Data {{ j }}</td>
+                                            {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                        {% for data in row %}
+                            <td style="font-weight: {{ font_weight }}">{{ data }}</td>
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
+

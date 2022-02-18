@@ -12,7 +12,8 @@ class Plot(object):
 
        For inventories, this class is meant to be added to the Stand Class using the Stand Class method of add_plot"""
 
-    def __init__(self):
+    def __init__(self, plot_factor: float):
+        self.plot_factor = plot_factor
         self.trees = []
         self.tree_count = 0
         self.tpa = 0
@@ -42,7 +43,7 @@ class Plot(object):
 
         self.qmd = math.sqrt((self.ba_ac / self.tpa) / .005454)
         self.vbar = self.bf_ac / self.ba_ac
-        self.avg_hgt = mean([t.height for t in self.trees])
+        self.avg_hgt = mean([t.total_height for t in self.trees])
         self.hdr = mean([t.hdr for t in self.trees])
 
         self._update_species(timber)
@@ -68,10 +69,10 @@ class Plot(object):
             self.species[key]['qmd'] = math.sqrt((self.species[key]['ba_ac'] / self.species[key]['tpa']) / .005454)
             self.species[key]['vbar'] = self.species[key]['bf_ac'] / self.species[key]['ba_ac']
             if key == 'totals_all':
-                self.species[key]['avg_hgt'] = mean([t.height for t in self.trees])
+                self.species[key]['avg_hgt'] = mean([t.total_height for t in self.trees])
                 self.species[key]['hdr'] = mean([t.hdr for t in self.trees])
             else:
-                self.species[key]['avg_hgt'] = mean([t.height for t in self.trees if t.species == tree.species])
+                self.species[key]['avg_hgt'] = mean([t.total_height for t in self.trees if t.species == tree.species])
                 self.species[key]['hdr'] = mean([t.hdr for t in self.trees if t.species == tree.species])
 
     def _update_logs(self, log):

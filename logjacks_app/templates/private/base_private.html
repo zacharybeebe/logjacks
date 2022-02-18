@@ -32,6 +32,34 @@
       }
     </style>
 
+    <!-- JQuery Alert Box -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <!--<link rel="stylesheet" href="/resources/demos/style.css">-->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="{{ url_for('static', filename='assets/dist/js/table_funcs.js') }}"></script>
+    <script>
+      $( function() {
+        $( "#dialog_message" ).dialog({
+          autoOpen: false,
+          width: 720,
+          height: 720,
+          modal: true,
+          buttons: {
+            Ok: function() {
+              $( this ).dialog( "close" );
+            }
+          }
+        });
+
+        $( "#open_dialog" ).on( "click", function() {
+          $( "#dialog_message" ).dialog( "open" );
+          $( "#dialog_message" ).css({
+            visibility: 'visible'});
+        });
+      } );
+    </script>
+
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='assets/dist/css/base_dash.css') }}" rel="stylesheet">
 
@@ -40,7 +68,8 @@
   <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/home"><img src="{{ url_for('static', filename='images/logo3_white.png') }}" width="66" height="30">&emsp;LogJacks</a>
-      <a class="nav-link" href="#" style="color: rgba(255, 255, 255, .95); text-shadow: 1.5px 1.5px black;">Stands</a>
+      <a class="nav-link" href="{{ url_for('new_inventory', username=username) }}" style="color: rgba(255, 255, 255, .95); text-shadow: 1.5px 1.5px black;">New Inventory</a>
+      <a class="nav-link" href="{{ url_for('db_stands', username=username) }}" style="color: rgba(255, 255, 255, .95); text-shadow: 1.5px 1.5px black;">Stands</a>
       <a class="nav-link" href="#" style="color: rgba(255, 255, 255, .95); text-shadow: 1.5px 1.5px black;">FVS</a>
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
@@ -60,11 +89,9 @@
                 </h6>
               </li>
 
-              {% for i in ['stands', 'plots', 'trees', 'logs'] %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('db_tables', username=username, table=i) }}">{{ i.capitalize() }}</a>
-                </li>
-              {% endfor %}
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('db_stands_summary', username=username) }}">Stands Summary</a>
+              </li>
 
               <li class="nav-item">
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -95,19 +122,21 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <select class="subMenuSelect form-control d-md-none mb-5" aria-label="Sidebar page navigation" onchange="location = this.value;">
-              <option value="">Navigation Menu</option>
+              <option value="#">Navigation Menu</option>
+              <option value="{{ url_for('db_stands_summary', username=username) }}">Stands Summary</option>
               {% for i in ['stands', 'plots', 'trees', 'logs'] %}
                 <option value="#">{{ i.capitalize() }}</option>
               {% endfor %}
               <option value="#">Account Settings</option>
             </select>
 
-            <h1 class="h2">{% block header2 %}{% endblock %}</h1>
+            <h1 class="h2" id="block_header_2">{% block header2 %}{% endblock %}</h1>
           </div>
 
           <!--<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
           {% block attr_tables %}{% endblock %}
           {% block table_data %}{% endblock %}
+          {% block input_data %}{% endblock %}
           {% block account_info %}{% endblock %}
           {% block send_message %}{% endblock %}
           {% block reply_message %}{% endblock %}

@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 
 def _add_date_zeros(val):
     return f"""{'0' * (2 - len(str(val)))}{val}"""
@@ -17,8 +18,9 @@ def h_date(model_date):
     return f'{year}-{month}-{day}'
 
 
-# def back_date(val):
-#     return datetime(*[int(i) for i in val.split('-')])
+def back_date(val):
+    return datetime(*[int(i) for i in val.split('-')], tzinfo=timezone.utc)
+
 
 def f_price(value):
     if isinstance(value, str):

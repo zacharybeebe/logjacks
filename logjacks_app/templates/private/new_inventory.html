@@ -1,0 +1,75 @@
+{% extends 'private/base_private.html' %}
+
+{% block title %}
+    New Inventory
+{% endblock %}
+
+{% block header2 %}
+    New Inventory
+{% endblock %}
+
+
+{% block input_data %}
+<script src="{{ url_for('static', filename='assets/dist/js/new_inventory.js') }}"></script>
+
+    <form class="form-inline" method="post" id="form_new_sale" enctype="multipart/form-data">
+        <input type="text" id="master|master_table" name="master|master_table" value="'default'" style="display: none" />
+        <p>
+            {% if table_data %}
+                <input type="button" class="btn btn-sm btn-info" value="Blank Inventory Sheet" onclick="create_new_table(this, {{ blank_row | safe }}, true)"/>
+            {% else %}
+                <input type="button" class="btn btn-sm btn-info" value="Blank Inventory Sheet" onclick="create_new_table(this, {{ blank_row | safe }})"/>
+            {% endif %}
+            <input type="button" class="btn btn-sm btn-info" value="Import Inventory from Excel/CSV" onclick="document.getElementById('inventory_file').click()" />
+            <input type="button" class="btn btn-sm btn-dark" value="Download Blank Excel Sheet" />
+            <input type="button" class="btn btn-sm btn-dark" value="Download Blank CSV Sheet" />
+        </p>
+
+        <p>
+            <input type="file" accept=".xlsx, .csv" id="inventory_file" name="inventory_file" style="display: none;" onchange="document.getElementById('form_new_sale').submit()">
+        </p>
+    </form>
+
+    <div id="cruise_toggle"></div>
+
+    <p>
+        <input type="button" class="btn btn-sm btn-info" value="Submit Data" id="submit_data" style="visibility: hidden" onclick="check_table_cells()"/>
+        <input type="button" class="btn btn-sm btn-danger" value="Clear Data" id="clear_data" style="visibility: hidden" onclick="clear_alert()"/>
+        <input type="button" class="btn btn-sm btn-dark" value="Click for Helpful Sheet Functions" id="open_dialog" style="visibility: hidden" />
+    </p>
+
+    {% if flash %}
+        <p id="flash_p">{{ flash | safe }}</p>
+    {% else %}
+        <p id="flash_p" style="visibility:hidden"></p>
+    {% endif %}
+
+
+    <div class="table-responsive" id="blank_inventory_table"></div>
+
+    <br>
+
+    <p>
+        <input type="button" class="btn btn-sm btn-dark" value="Add Row" id="add_row_but" onclick="add_row({{ blank_row | safe }})" style="visibility: hidden" />
+    </p>
+
+
+    <div id="dialog_message" title="Helpful Data Entry Functions" style="visibility: hidden">
+        {{ helpful_func_text | safe }}
+    </div>
+
+    {% if table_data %}
+        <script>
+            create_imported_table({{ table_data | safe }})
+        </script>
+    {% endif %}
+
+
+
+
+
+{% endblock %}
+
+<!--
+
+-->

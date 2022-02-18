@@ -6,9 +6,6 @@ DB_STAND = {
     'Plots': lambda stand: len(list(stand.plots)),
     'Trees': lambda stand: sum([len(list(plot.trees)) for plot in stand.plots]),
     'Date': lambda stand: stand.date_inventory,
-    'Preferred Log Length': lambda stand: stand.pref_log_length,
-    'Minimum Log Length': lambda stand: stand.min_log_length,
-    'Utility Log DIB': lambda stand: stand.util_log_dib,
     'TPA': lambda stand: f_round_or_blank(stand.tpa) if stand.tpa > 0 else 'No Plots',
     'BA/AC': lambda stand: f_round_or_blank(stand.ba_ac),
     'QMD': lambda stand: f_round_or_blank(stand.qmd),
@@ -57,61 +54,25 @@ DB_LOG = {
     'Log Number': lambda log: log.number,
     'Stem Height': lambda log: log.stem_height,
     'Length': lambda log: log.length,
-    'Defect': lambda log: log.defect,
-    'Species': lambda log: log.species,
-    'Logs/AC': lambda log: f_round_or_blank(log.lpa),
-    'Top DIB': lambda log: log.top_dib,
     'Grade': lambda log: log.grade,
+    'Defect': lambda log: log.defect,
+    'Top DIB': lambda log: log.top_dib,
     'BF': lambda log: f_round_or_blank(log.bf),
     'CF': lambda log: f_round_or_blank(log.cf),
+    'Logs/AC': lambda log: f_round_or_blank(log.lpa),
     'BF/AC': lambda log: f_round_or_blank(log.bf_ac),
     'CF/AC': lambda log: f_round_or_blank(log.cf_ac)
 }
 
 
-def _get_stands_table(user):
-    table_data = [list(DB_STAND.keys())]
-    for stand in user.stands:
-        table_data.append([DB_STAND[key](stand) for key in DB_STAND])
-    return table_data
 
 
-def _get_plots_table(user):
-    table_data = [['Stand Name'] + list(DB_PLOT.keys())]
-    for stand in user.stands:
-        for plot in stand.plots:
-            temp = [stand.name] + [DB_PLOT[key](plot) for key in DB_PLOT]
-            table_data.append(temp)
-    return table_data
 
 
-def _get_trees_table(user):
-    table_data = [['Stand Name', 'Plot Number'] + list(DB_TREE.keys())]
-    for stand in user.stands:
-        for plot in stand.plots:
-            for tree in plot.trees:
-                temp = [stand.name, plot.number] + [DB_TREE[key](tree) for key in DB_TREE]
-                table_data.append(temp)
-    return table_data
 
 
-def _get_logs_table(user):
-    table_data = [['Stand Name', 'Plot Number', 'Tree Number'] + list(DB_LOG.keys())]
-    for stand in user.stands:
-        for plot in stand.plots:
-            for tree in plot.trees:
-                for log in tree.logs:
-                    temp = [stand.name, plot.number, tree.number] + [DB_LOG[key](log) for key in DB_LOG]
-                    table_data.append(temp)
-    return table_data
 
 
-DB_TABLE_FUNCS = {
-    'stands': lambda user: _get_stands_table(user),
-    'plots': lambda user: _get_plots_table(user),
-    'trees': lambda user: _get_trees_table(user),
-    'logs': lambda user: _get_logs_table(user)
-}
 
 
 TABLE_HEADS = ['Species', 'TPA', 'BA/AC', 'RD/AC', 'QMD', 'VBAR', 'AVG HGT', 'HDR', 'BF/AC', 'CF/AC']
@@ -133,10 +94,7 @@ ATTR_TABLES = {
         'Acres': lambda stand: {'input': True, 'type': 'text', 'val': stand.acres},
         'Plots': lambda stand: {'input': False, 'type': 'text', 'val': len(list(stand.plots))},
         'Trees': lambda stand: {'input': False, 'type': 'text', 'val': sum([len(list(plot.trees)) for plot in stand.plots])},
-        'Inventory Date': lambda stand: {'input': True, 'type': 'date', 'val': h_date(stand.date_inventory)},
-        'Preferred Log Length': lambda stand: {'input': True, 'type': 'text', 'val': stand.pref_log_length},
-        'Minimum Log Length': lambda stand: {'input': True, 'type': 'text', 'val': stand.min_log_length},
-        'Utility Log DIB': lambda stand: {'input': True, 'type': 'text', 'val': stand.util_log_dib},
+        'Inventory Date': lambda stand: {'input': True, 'type': 'date', 'val': h_date(stand.date_inventory)}
     },
     'Plot': {
         'Plot Number': lambda plot: {'input': False, 'type': 'text', 'val': plot.number},

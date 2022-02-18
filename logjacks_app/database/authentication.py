@@ -6,7 +6,11 @@ from hashlib import sha256
 from logjacks_app import (
     app,
     db,
-    User
+    User,
+    Stand,
+    Plot,
+    Tree,
+    Log
 )
 
 
@@ -85,6 +89,71 @@ def initialize_user(user, session):
 def disengage_user(session):
     session.pop('user', None)
     session.pop('date', None)
+
+
+
+""" 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    stand_id = db.Column(db.Integer, db.ForeignKey('stand.id'), nullable=False)
+    plot_id = db.Column(db.Integer, db.ForeignKey('plot.id'), nullable=False)
+    tree_id = db.Column(db.Integer, db.ForeignKey('tree.id'), nullable=False)
+    species = db.Column(db.String(4), db.ForeignKey('tree.species'), nullable=False)
+
+    number = db.Column(db.Integer)
+    stem_height = db.Column(db.Integer)
+    length = db.Column(db.Integer)
+    defect = db.Column(db.Integer)
+
+    lpa = db.Column(db.Float)
+    top_dib = db.Column(db.Integer)
+    grade = db.Column(db.String(4))
+    grade_name = db.Column(db.String(32))
+    scrib = db.Column(db.Float)
+    bf = db.Column(db.Float)
+    cf = db.Column(db.Float)
+    bf_ac = db.Column(db.Float)
+    cf_ac = db.Column(db.Float)
+
+    logs = db.relationship('Tree', secondary=tree_logs, backref=db.backref('logs', lazy=True))
+
+"""
+
+def stands_to_database(user, stands):
+    for stand in stands:
+        db_stand = Stand(user_id=user.id, name=stand.name, acres=stand.acres, date_inventory=stand.date_inventory)
+        db.session.add(db_stand)
+        db.session.commit()
+
+        for i, plot in enumerate(stand.plots, 1):
+            db_plot = Plot(user_id=user.id, stand_id=db_stand.id, number=i, plot_factor=plot.plot_factor)
+            db.session.add(db_plot)
+            db.session.commit()
+
+            for j, tree in enumerate(plot.trees, 1):
+                db_tree = Tree(user_id=user.id, stand_id=db_stand.id, plot_id=db_plot.id, plot_factor=db_plot.plot_factor,
+                               number=j, species=tree.species, dbh=tree.dbh, total_height=tree.total_height, hdr=tree.hdr,
+                               ba=tree.ba, rd=tree.rd, tpa=tree.tpa, ba_ac=tree.ba_ac, rd_ac=tree.rd_ac, stem_dibs=tree.stem_dibs,
+                               dib_heights=tree.dib_heights, merch_dib=tree.merch_dib, merch_height=tree.merch_height,
+                               bf=tree.bf, cf=tree.cf, bf_ac=tree.bf_ac, cf_ac=tree.cf_ac, vbar=tree.vbar)
+                db.session.add(db_tree)
+                db.session.commit()
+
+                for k, log in tree.logs.items():
+                    db_log = Log(user_id=user.id, stand_id=db_stand.id, plot_id=db_plot.id, tree_id=db_tree.id,
+                                 species=log.species, number=k, stem_height=log.stem_height, length=log.length, defect=log.defect,
+                                 lpa=log.lpa, top_dib=log.top_dib, grade=log.grade, grade_name=log.grade_name, scrib=log.scrib,
+                                 bf=log.bf, cf=log.cf, bf_ac=log.bf_ac, cf_ac=log.cf_ac)
+                    db.session.add(db_log)
+                    db.session.commit()
+
+                    db_tree.logs.append(db_log)
+                db_plot.trees.append(db_tree)
+            db_stand.plots.append(db_plot)
+        user.stands.append(db_stand)
+    db.session.commit()
+
+
+
 
 
 # def check_update_user_account(username, session, request_form):

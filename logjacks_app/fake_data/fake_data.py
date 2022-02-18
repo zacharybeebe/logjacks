@@ -1,8 +1,9 @@
+from datetime import datetime, timezone
 from faker import Faker
 from logjacks_app.fake_data.fake_tree_data import get_timber, randint, choice, randrange
 
 f = Faker()
-
+SPACE = 65
 
 def test_user():
     kwargs = {
@@ -29,7 +30,7 @@ def fake_user():
         'username': f.unique.user_name(),
         'password': f.password()
     }
-    print(kwargs['username'], kwargs['password'])
+    print(f"{kwargs['username'] + (' ' * (SPACE - len(kwargs['username'])))}{kwargs['password']}")
     return kwargs
 
 
@@ -37,9 +38,7 @@ def fake_stand():
     kwargs = {
         'name': ''.join([chr(choice([randrange(48, 57), randrange(65, 70)])) for _ in range(8)]),
         'acres': randrange(10, 100),
-        'pref_log_length': choice([40, 38, 36, 34, 32]),
-        'min_log_length': choice([16, 14, 12, 10, 8]),
-        'util_log_dib': 3
+        'date_inventory': datetime(randrange(2018, 2021), randrange(1, 12), randrange(1, 28), tzinfo=timezone.utc)
     }
     return kwargs
 
